@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Blair's Workshop
 
-## Getting Started
+Public mod catalog for PC game mods and Lua scripts. Free downloads now, with Stripe-powered paid mods and a user library.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router) + TypeScript + Tailwind
+- **PostgreSQL** via Prisma (Neon or Supabase recommended)
+- **Cloudflare R2** for private mod file storage with signed download URLs
+- **NextAuth** for user accounts
+- **Stripe** for paid mod checkout
+
+## Quick start
+
+1. Copy environment variables:
+
+```bash
+cp .env.example .env
+```
+
+2. Set `DATABASE_URL`, `AUTH_SECRET`, and `ADMIN_PASSWORD` at minimum.
+
+3. Push the database schema:
+
+```bash
+npm run db:push
+```
+
+4. Start the dev server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000/admin/login](http://localhost:3000/admin/login) and sign in with `ADMIN_PASSWORD`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## File storage (R2)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a Cloudflare R2 bucket and API token. Set:
 
-## Learn More
+- `R2_ACCOUNT_ID`
+- `R2_ACCESS_KEY_ID`
+- `R2_SECRET_ACCESS_KEY`
+- `R2_BUCKET_NAME`
 
-To learn more about Next.js, take a look at the following resources:
+Downloads are served via short-lived signed URLs from `/api/download/[versionId]`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Stripe (paid mods)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Create a Stripe account and add keys to `.env`.
+2. Set up a webhook pointing to `https://your-domain.com/api/stripe/webhook` for `checkout.session.completed`.
+3. Set a mod's price in Admin (price in USD). Users must sign in and purchase before downloading.
 
-## Deploy on Vercel
+## Deploy to Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Push this repo to GitHub.
+2. Import the project in [Vercel](https://vercel.com).
+3. Add all environment variables from `.env.example`.
+4. Use a hosted Postgres provider (Neon integrates with Vercel).
+5. Run `npm run db:push` against production `DATABASE_URL` once (locally or via CI).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npx vercel --prod
+```
+
+## Routes
+
+| Path | Description |
+|------|-------------|
+| `/` | Homepage with featured mods |
+| `/mods` | Browse all mods |
+| `/mods/[slug]` | Mod detail + download |
+| `/lua` | Lua scripts category |
+| `/games/[game]` | Mods filtered by game |
+| `/library` | Purchased mods (signed-in users) |
+| `/login`, `/register` | User auth |
+| `/admin` | Mod management (admin password) |
+
+## Legal pages
+
+Update the DMCA email in `src/components/site-footer.tsx` and `src/app/terms/page.tsx` before going public.

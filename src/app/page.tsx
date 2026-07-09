@@ -1,65 +1,69 @@
-import Image from "next/image";
+import Link from "next/link";
+import { ModCard } from "@/components/mod-card";
+import { getPublishedMods } from "@/lib/mods";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const [featured, recent] = await Promise.all([
+    getPublishedMods({ featured: true }),
+    getPublishedMods(),
+  ]);
+
+  const displayMods = featured.length > 0 ? featured : recent.slice(0, 6);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <div>
+      <section className="border-b border-zinc-200 bg-gradient-to-b from-violet-50 to-zinc-50 dark:border-zinc-800 dark:from-violet-950/30 dark:to-zinc-950">
+        <div className="mx-auto max-w-6xl px-4 py-16">
+          <h1 className="max-w-2xl text-4xl font-bold tracking-tight sm:text-5xl">
+            Welcome to Blair&apos;s Workshop
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mt-4 max-w-xl text-lg text-zinc-600 dark:text-zinc-400">
+            PC game mods and Lua scripts I build and maintain. Free downloads
+            today — premium mods may come later.
           </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link
+              href="/mods"
+              className="rounded-full bg-violet-600 px-6 py-3 font-medium text-white transition hover:bg-violet-500"
+            >
+              Browse all mods
+            </Link>
+            <Link
+              href="/lua"
+              className="rounded-full border border-zinc-300 px-6 py-3 font-medium transition hover:border-violet-400 dark:border-zinc-700"
+            >
+              Lua scripts
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-12">
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-2xl font-semibold">
+            {featured.length > 0 ? "Featured mods" : "Latest mods"}
+          </h2>
+          <Link href="/mods" className="text-sm text-violet-600 hover:underline">
+            View all →
+          </Link>
         </div>
-      </main>
+        {displayMods.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-zinc-300 p-12 text-center text-zinc-500 dark:border-zinc-700">
+            <p>No mods published yet.</p>
+            <Link href="/admin" className="mt-2 inline-block text-violet-600 hover:underline">
+              Add your first mod in Admin →
+            </Link>
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {displayMods.map((mod) => (
+              <ModCard key={mod.id} mod={mod} />
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }
