@@ -1,6 +1,7 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
+import { EmptyState } from "@/components/empty-state";
 import { ModCard } from "@/components/mod-card";
+import { PageHeader } from "@/components/page-header";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
@@ -30,20 +31,19 @@ export default async function LibraryPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <h1 className="text-3xl font-bold">My Library</h1>
-      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-        Mods you have purchased. Free mods are available from their mod pages.
-      </p>
+      <PageHeader
+        title="My Library"
+        description="Mods you have purchased. Free mods are available from their mod pages."
+      />
 
       {purchases.length === 0 ? (
-        <div className="mt-8 rounded-xl border border-dashed border-zinc-300 p-12 text-center dark:border-zinc-700">
-          <p className="text-zinc-500">You have not purchased any mods yet.</p>
-          <Link href="/mods" className="mt-4 inline-block text-violet-600 hover:underline">
-            Browse mods →
-          </Link>
-        </div>
+        <EmptyState
+          title="Your library is empty"
+          description="Purchased mods will appear here. Free mods can be downloaded directly from their pages."
+          action={{ href: "/mods", label: "Browse mods" }}
+        />
       ) : (
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {purchases.map(({ mod }) => (
             <ModCard key={mod.id} mod={mod} />
           ))}

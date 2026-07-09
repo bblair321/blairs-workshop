@@ -1,4 +1,6 @@
+import { EmptyState } from "@/components/empty-state";
 import { ModCard } from "@/components/mod-card";
+import { PageHeader } from "@/components/page-header";
 import { getPublishedMods } from "@/lib/mods";
 
 export const dynamic = "force-dynamic";
@@ -13,16 +15,19 @@ export default async function LuaPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <h1 className="text-3xl font-bold">Lua Scripts</h1>
-      <p className="mt-2 max-w-2xl text-zinc-600 dark:text-zinc-400">
-        Custom Lua scripts with install paths and copy-paste snippets where
-        applicable.
-      </p>
+      <PageHeader
+        title="Lua Scripts"
+        description="Custom Lua scripts with install paths and copy-paste snippets where applicable."
+      />
 
       {mods.length === 0 ? (
-        <p className="mt-8 text-zinc-500">No Lua scripts published yet.</p>
+        <EmptyState
+          title="No Lua scripts yet"
+          description="Lua scripts will appear here once published."
+          action={{ href: "/mods", label: "Browse all mods" }}
+        />
       ) : (
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {mods.map((mod) => (
             <ModCard key={mod.id} mod={mod} />
           ))}

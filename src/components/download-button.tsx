@@ -76,7 +76,7 @@ export function DownloadButton({
             type="button"
             onClick={() => handleDownload()}
             disabled={loading}
-            className="rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-violet-500 disabled:opacity-50"
+            className="btn-primary"
           >
             {loading ? "Preparing…" : `Download v${version.version}`}
             <span className="ml-2 text-violet-200">
@@ -88,7 +88,7 @@ export function DownloadButton({
               type="button"
               onClick={() => handleDownload("installer")}
               disabled={loading}
-              className="rounded-lg border border-violet-300 px-4 py-2 text-sm font-medium text-violet-700 transition hover:bg-violet-50 disabled:opacity-50 dark:border-violet-700 dark:text-violet-300 dark:hover:bg-violet-950"
+              className="btn-secondary !border-violet-300 !text-violet-700 hover:!bg-violet-50 dark:!border-violet-700 dark:!text-violet-300 dark:hover:!bg-violet-950"
             >
               Download Installer
             </button>
