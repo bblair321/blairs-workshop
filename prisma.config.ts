@@ -3,12 +3,18 @@
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
+// Use unpooled/direct URL for Prisma CLI (Neon sets DATABASE_URL_UNPOOLED).
+const databaseUrl =
+  process.env.DIRECT_URL ??
+  process.env.DATABASE_URL_UNPOOLED ??
+  process.env.DATABASE_URL;
+
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
+    url: databaseUrl,
   },
 });

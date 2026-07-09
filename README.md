@@ -26,6 +26,17 @@ cp .env.example .env
 npm run db:push
 ```
 
+### Neon (recommended)
+
+1. Create a free project at [console.neon.tech](https://console.neon.tech).
+2. Click **Connect** and copy both connection strings:
+   - **Pooled** (`-pooler` in hostname) → `DATABASE_URL`
+   - **Direct** (no `-pooler`) → `DATABASE_URL_UNPOOLED`
+3. Add to `.env` (include `sslmode=require` on both; optional `connect_timeout=15` on `DATABASE_URL`).
+4. Run `npm run db:push` once to create tables.
+
+The app auto-uses the Neon adapter when `DATABASE_URL` contains `neon.tech`.
+
 4. Start the dev server:
 
 ```bash
