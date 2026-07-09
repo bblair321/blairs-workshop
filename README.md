@@ -74,8 +74,16 @@ npx vercel --prod
 | `/games/[game]` | Mods filtered by game |
 | `/library` | Purchased mods (signed-in users) |
 | `/login`, `/register` | User auth |
+| `/terms`, `/privacy` | Legal pages |
 | `/admin` | Mod management (admin password) |
 
 ## Legal pages
 
-Update the DMCA email in `src/components/site-footer.tsx` and `src/app/terms/page.tsx` before going public.
+Contact email and legal copy are driven by `CONTACT_EMAIL` in `.env`. Pages:
+
+| Path | Description |
+|------|-------------|
+| `/terms` | Terms of Use (includes DMCA procedure) |
+| `/privacy` | Privacy Policy |
+
+Update `LEGAL_LAST_UPDATED` in `src/lib/site.ts` when you change legal text.
