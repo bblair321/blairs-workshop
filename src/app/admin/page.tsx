@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { AdminSecurityBanner } from "@/components/admin-security-banner";
 import { AdminSignOut } from "@/components/admin-sign-out";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
@@ -21,6 +22,7 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
+      <AdminSecurityBanner />
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Admin</h1>
         <div className="flex gap-3">

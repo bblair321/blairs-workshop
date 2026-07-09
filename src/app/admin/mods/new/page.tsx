@@ -9,7 +9,7 @@ export default function NewModPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [category, setCategory] = useState<"PC_GAME" | "LUA">("PC_GAME");
+  const [category, setCategory] = useState<"PC_GAME" | "LUA" | "TOOLS">("PC_GAME");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -80,11 +80,12 @@ export default function NewModPage() {
           <select
             name="category"
             value={category}
-            onChange={(e) => setCategory(e.target.value as "PC_GAME" | "LUA")}
+            onChange={(e) => setCategory(e.target.value as "PC_GAME" | "LUA" | "TOOLS")}
             className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
           >
             <option value="PC_GAME">PC Game Mod</option>
             <option value="LUA">Lua Script</option>
+            <option value="TOOLS">Tool</option>
           </select>
         </div>
         <Field label="Game (optional)" name="game" placeholder="e.g. Skyrim, FiveM" />

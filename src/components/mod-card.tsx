@@ -25,7 +25,7 @@ export function ModCard({ mod }: ModCardProps) {
           />
         ) : (
           <span className="text-4xl opacity-40">
-            {mod.category === "LUA" ? "Lua" : "Mod"}
+            {mod.category === "LUA" ? "Lua" : mod.category === "TOOLS" ? "Tool" : "Mod"}
           </span>
         )}
       </div>

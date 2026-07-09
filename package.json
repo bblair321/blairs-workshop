@@ -10,7 +10,8 @@
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "test:r2": "node scripts/test-r2.cjs"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.2",

@@ -7,6 +7,7 @@ export type ModWithVersions = Mod & {
 export const CATEGORY_LABELS: Record<ModCategory, string> = {
   PC_GAME: "PC Game Mod",
   LUA: "Lua Script",
+  TOOLS: "Tool",
 };
 
 export const DEFAULT_INSTALL_INSTRUCTIONS: Record<ModCategory, string> = {
@@ -18,4 +19,8 @@ export const DEFAULT_INSTALL_INSTRUCTIONS: Record<ModCategory, string> = {
 2. Copy it to your game's scripts folder (path varies by runtime).
 3. Restart the game or reload scripts if your runtime supports hot reload.
 4. Check the in-game console for any load errors.`,
+  TOOLS: `1. Download the tool archive or installer.
+2. Run the installer, or extract and run the executable from the folder.
+3. If Windows SmartScreen warns about an unsigned app, click "More info" → "Run anyway" only if you trust this source.
+4. See the mod description for what game or workflow this tool is meant for.`,
 };

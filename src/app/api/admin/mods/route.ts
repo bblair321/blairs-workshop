@@ -1,3 +1,4 @@
+import { ModCategory } from "@/generated/prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
@@ -10,7 +11,7 @@ const modSchema = z.object({
   slug: z.string().min(1).max(200).optional(),
   description: z.string().min(1),
   shortDescription: z.string().max(500).optional(),
-  category: z.enum(["PC_GAME", "LUA"]),
+  category: z.enum(["PC_GAME", "LUA", "TOOLS"]),
   game: z.string().max(100).optional(),
   installInstructions: z.string().optional(),
   luaSnippet: z.string().optional(),
@@ -62,7 +63,7 @@ export async function POST(request: Request) {
       slug,
       description: data.description,
       shortDescription: data.shortDescription || null,
-      category: data.category,
+      category: ModCategory[data.category],
       game: data.game || null,
       installInstructions:
         data.installInstructions || DEFAULT_INSTALL_INSTRUCTIONS[data.category],

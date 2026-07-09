@@ -1,3 +1,4 @@
+import { ModCategory } from "@/generated/prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
@@ -11,7 +12,7 @@ const updateSchema = z.object({
   slug: z.string().min(1).max(200).optional(),
   description: z.string().min(1).optional(),
   shortDescription: z.string().max(500).optional().nullable(),
-  category: z.enum(["PC_GAME", "LUA"]).optional(),
+  category: z.enum(["PC_GAME", "LUA", "TOOLS"]).optional(),
   game: z.string().max(100).optional().nullable(),
   installInstructions: z.string().optional(),
   luaSnippet: z.string().optional().nullable(),
@@ -75,6 +76,7 @@ export async function PATCH(
     where: { id },
     data: {
       ...data,
+      category: data.category ? ModCategory[data.category] : undefined,
       slug: data.slug ?? (data.title ? slugify(data.title) : undefined),
       coverImageUrl:
         data.coverImageUrl === "" ? null : data.coverImageUrl ?? undefined,

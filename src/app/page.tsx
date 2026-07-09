@@ -20,8 +20,8 @@ export default async function HomePage() {
             Welcome to Blair&apos;s Workshop
           </h1>
           <p className="mt-4 max-w-xl text-lg text-zinc-600 dark:text-zinc-400">
-            PC game mods and Lua scripts I build and maintain. Free downloads
-            today — premium mods may come later.
+            PC game mods, Lua scripts, and modding tools I build and maintain.
+            Free downloads today — premium content may come later.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
@@ -35,6 +35,12 @@ export default async function HomePage() {
               className="rounded-full border border-zinc-300 px-6 py-3 font-medium transition hover:border-violet-400 dark:border-zinc-700"
             >
               Lua scripts
+            </Link>
+            <Link
+              href="/tools"
+              className="rounded-full border border-zinc-300 px-6 py-3 font-medium transition hover:border-violet-400 dark:border-zinc-700"
+            >
+              Tools
             </Link>
           </div>
         </div>

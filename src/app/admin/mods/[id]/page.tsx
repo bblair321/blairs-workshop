@@ -21,7 +21,7 @@ type Mod = {
   title: string;
   description: string;
   shortDescription: string | null;
-  category: "PC_GAME" | "LUA";
+  category: "PC_GAME" | "LUA" | "TOOLS";
   game: string | null;
   installInstructions: string;
   luaSnippet: string | null;
@@ -44,6 +44,8 @@ export default function EditModPage() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [mainFileName, setMainFileName] = useState<string | null>(null);
+  const [installerFileName, setInstallerFileName] = useState<string | null>(null);
 
   const loadMod = useCallback(async () => {
     const res = await fetch(`/api/admin/mods/${id}`);
@@ -107,11 +109,12 @@ export default function EditModPage() {
 
   async function handleUpload(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const formEl = e.currentTarget;
     setUploading(true);
     setError(null);
     setMessage(null);
 
-    const form = new FormData(e.currentTarget);
+    const form = new FormData(formEl);
     const res = await fetch(`/api/admin/mods/${id}/versions`, {
       method: "POST",
       body: form,
@@ -126,7 +129,9 @@ export default function EditModPage() {
     }
 
     setMessage("Version uploaded");
-    e.currentTarget.reset();
+    formEl.reset();
+    setMainFileName(null);
+    setInstallerFileName(null);
     await loadMod();
   }
 
@@ -193,6 +198,7 @@ export default function EditModPage() {
           >
             <option value="PC_GAME">PC Game Mod</option>
             <option value="LUA">Lua Script</option>
+            <option value="TOOLS">Tool</option>
           </select>
         </div>
         <Field label="Game" name="game" defaultValue={mod.game ?? ""} />
@@ -258,58 +264,129 @@ export default function EditModPage() {
         </div>
       </form>
 
-      <section className="mt-12 border-t border-zinc-200 pt-10 dark:border-zinc-800">
-        <h2 className="text-lg font-semibold">Upload new version</h2>
-        <form onSubmit={handleUpload} className="mt-4 space-y-4">
+      <section className="mt-12 rounded-2xl border-2 border-violet-200 bg-violet-50/50 p-6 dark:border-violet-900 dark:bg-violet-950/20">
+        <div className="mb-6">
+          <h2 className="text-xl font-semibold text-violet-900 dark:text-violet-100">
+            Upload new version
+          </h2>
+          <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+            Add a mod file for players to download. Zip, Lua, or other archives work.
+          </p>
+        </div>
+
+        <form onSubmit={handleUpload} className="space-y-5">
           <Field label="Version" name="version" placeholder="1.0.0" required />
           <div>
             <label className="block text-sm font-medium">Changelog</label>
             <textarea
               name="changelog"
               rows={3}
-              className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+              placeholder="What changed in this version?"
+              className="mt-1 w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium">Mod file (.zip, .lua, etc.)</label>
-            <input
-              name="file"
-              type="file"
-              required
-              className="mt-1 w-full text-sm"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">
-              Installer (optional .exe)
-            </label>
-            <input name="installer" type="file" className="mt-1 w-full text-sm" />
-          </div>
+
+          <FilePicker
+            name="file"
+            label="Mod file"
+            hint=".zip, .lua, .7z, etc."
+            required
+            selectedName={mainFileName}
+            onFileSelect={setMainFileName}
+          />
+
+          <FilePicker
+            name="installer"
+            label="Installer (optional)"
+            hint=".exe installer if you have one"
+            selectedName={installerFileName}
+            onFileSelect={setInstallerFileName}
+          />
+
           <button
             type="submit"
-            disabled={uploading}
-            className="rounded-lg bg-violet-600 px-6 py-2 font-medium text-white hover:bg-violet-500 disabled:opacity-50"
+            disabled={uploading || !mainFileName}
+            className="w-full rounded-xl bg-violet-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           >
             {uploading ? "Uploading…" : "Upload version"}
           </button>
         </form>
 
         {mod.versions.length > 0 && (
-          <ul className="mt-8 divide-y divide-zinc-200 rounded-xl border border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
-            {mod.versions.map((v) => (
-              <li key={v.id} className="px-4 py-3 text-sm">
-                <p className="font-medium">
-                  v{v.version} — {v.fileName} ({formatFileSize(v.fileSize)})
-                </p>
-                {v.installerName && (
-                  <p className="text-zinc-500">Installer: {v.installerName}</p>
-                )}
-                {v.changelog && <p className="text-zinc-500">{v.changelog}</p>}
-              </li>
-            ))}
-          </ul>
+          <div className="mt-8">
+            <h3 className="mb-3 text-sm font-medium text-zinc-500">Previous versions</h3>
+            <ul className="divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
+              {mod.versions.map((v) => (
+                <li key={v.id} className="px-4 py-3 text-sm">
+                  <p className="font-medium">
+                    v{v.version} — {v.fileName} ({formatFileSize(v.fileSize)})
+                  </p>
+                  {v.installerName && (
+                    <p className="text-zinc-500">Installer: {v.installerName}</p>
+                  )}
+                  {v.changelog && <p className="text-zinc-500">{v.changelog}</p>}
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </section>
+    </div>
+  );
+}
+
+function FilePicker({
+  name,
+  label,
+  hint,
+  required,
+  selectedName,
+  onFileSelect,
+}: {
+  name: string;
+  label: string;
+  hint: string;
+  required?: boolean;
+  selectedName: string | null;
+  onFileSelect: (name: string | null) => void;
+}) {
+  const inputId = `file-${name}`;
+
+  return (
+    <div>
+      <label htmlFor={inputId} className="block text-sm font-medium">
+        {label}
+        {required && <span className="text-red-500"> *</span>}
+      </label>
+      <div className="mt-2">
+        <input
+          id={inputId}
+          name={name}
+          type="file"
+          required={required}
+          className="sr-only"
+          onChange={(e) => onFileSelect(e.target.files?.[0]?.name ?? null)}
+        />
+        <label
+          htmlFor={inputId}
+          className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-violet-300 bg-white px-6 py-8 text-center transition hover:border-violet-500 hover:bg-violet-50 dark:border-violet-700 dark:bg-zinc-900 dark:hover:border-violet-500 dark:hover:bg-violet-950/40"
+        >
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-violet-100 text-violet-600 dark:bg-violet-900 dark:text-violet-300" aria-hidden>
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5-5m0 0l5 5m-5-5v12" />
+            </svg>
+          </span>
+          <span className="mt-2 text-base font-semibold text-violet-700 dark:text-violet-300">
+            {selectedName ? "Change file" : "Choose file"}
+          </span>
+          <span className="mt-1 text-sm text-zinc-500">{hint}</span>
+          {selectedName && (
+            <span className="mt-3 rounded-full bg-violet-100 px-3 py-1 text-sm font-medium text-violet-800 dark:bg-violet-900 dark:text-violet-200">
+              {selectedName}
+            </span>
+          )}
+        </label>
+      </div>
     </div>
   );
 }

@@ -10,6 +10,7 @@ datasource db {
 enum ModCategory {
   PC_GAME
   LUA
+  TOOLS
 }
 
 model User {

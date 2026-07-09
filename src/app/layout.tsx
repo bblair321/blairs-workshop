@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     template: "%s | Blair's Workshop",
   },
   description:
-    "Download PC game mods and custom Lua scripts. Free and premium mods for your favorite games.",
+    "PC game mods and Lua scripts by Blair. Free downloads, with premium mods coming later.",
 };
 
 export default function RootLayout({
