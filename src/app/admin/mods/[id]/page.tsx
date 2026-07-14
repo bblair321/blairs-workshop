@@ -107,6 +107,55 @@ export default function EditModPage() {
     router.refresh();
   }
 
+  // Files go straight from the browser to R2 via presigned URLs;
+  // Vercel functions cap request bodies at ~4.5 MB, so they can't proxy mod files.
+  async function uploadFileToStorage(
+    file: File,
+    version: string,
+    kind: "file" | "installer",
+  ) {
+    const contentType = file.type || "application/octet-stream";
+    const presignRes = await fetch("/api/admin/uploads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        modId: id,
+        version,
+        fileName: file.name,
+        contentType,
+        kind,
+      }),
+    });
+    const presignData = (await presignRes.json()) as {
+      key?: string;
+      url?: string;
+      error?: string;
+    };
+    if (!presignRes.ok || !presignData.key || !presignData.url) {
+      throw new Error(
+        typeof presignData.error === "string"
+          ? presignData.error
+          : "Failed to prepare upload",
+      );
+    }
+
+    const putRes = await fetch(presignData.url, {
+      method: "PUT",
+      headers: { "Content-Type": contentType },
+      body: file,
+    });
+    if (!putRes.ok) {
+      throw new Error("Upload to storage failed");
+    }
+
+    return {
+      key: presignData.key,
+      name: file.name,
+      size: file.size,
+      type: file.type || null,
+    };
+  }
+
   async function handleUpload(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formEl = e.currentTarget;
@@ -114,25 +163,51 @@ export default function EditModPage() {
     setError(null);
     setMessage(null);
 
-    const form = new FormData(formEl);
-    const res = await fetch(`/api/admin/mods/${id}/versions`, {
-      method: "POST",
-      body: form,
-    });
+    try {
+      const form = new FormData(formEl);
+      const version = String(form.get("version") ?? "").trim();
+      const changelog = String(form.get("changelog") ?? "");
+      const mainFile = form.get("file");
+      const installerFile = form.get("installer");
 
-    setUploading(false);
+      if (!version || !(mainFile instanceof File) || mainFile.size === 0) {
+        throw new Error("Version and mod file are required");
+      }
 
-    if (!res.ok) {
-      const data = (await res.json()) as { error?: string };
-      setError(data.error ?? "Upload failed");
-      return;
+      const uploadedFile = await uploadFileToStorage(mainFile, version, "file");
+      const uploadedInstaller =
+        installerFile instanceof File && installerFile.size > 0
+          ? await uploadFileToStorage(installerFile, version, "installer")
+          : null;
+
+      const res = await fetch(`/api/admin/mods/${id}/versions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          version,
+          changelog: changelog || undefined,
+          file: uploadedFile,
+          installer: uploadedInstaller,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = (await res.json()) as { error?: string };
+        throw new Error(
+          typeof data.error === "string" ? data.error : "Upload failed",
+        );
+      }
+
+      setMessage("Version uploaded");
+      formEl.reset();
+      setMainFileName(null);
+      setInstallerFileName(null);
+      await loadMod();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setUploading(false);
     }
-
-    setMessage("Version uploaded");
-    formEl.reset();
-    setMainFileName(null);
-    setInstallerFileName(null);
-    await loadMod();
   }
 
   async function handleDelete() {

@@ -86,6 +86,27 @@ export async function getSignedDownloadUrl(
   );
 }
 
+export async function getSignedUploadUrl(
+  key: string,
+  contentType: string,
+  expiresIn = 900,
+): Promise<string> {
+  const client = getR2Client();
+  if (!client) {
+    throw new Error("R2 storage is not configured");
+  }
+
+  return getSignedUrl(
+    client,
+    new PutObjectCommand({
+      Bucket: getR2Bucket(),
+      Key: key,
+      ContentType: contentType,
+    }),
+    { expiresIn },
+  );
+}
+
 export function buildModFileKey(modId: string, version: string, fileName: string): string {
   const safeName = fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
   return `mods/${modId}/${version}/${safeName}`;
