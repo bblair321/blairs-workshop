@@ -20,6 +20,8 @@ const SITE_DESCRIPTION =
   "PC game mods, Lua scripts, and modding tools by Blair. Free downloads, with premium mods coming later.";
 const DEFAULT_TITLE = `${SITE_NAME} — PC Game Mods & Lua Scripts`;
 
+const googleVerification = process.env.GOOGLE_SITE_VERIFICATION?.trim();
+
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
@@ -40,6 +42,9 @@ export const metadata: Metadata = {
     title: DEFAULT_TITLE,
     description: SITE_DESCRIPTION,
   },
+  ...(googleVerification
+    ? { verification: { google: googleVerification } }
+    : {}),
 };
 
 export default function RootLayout({
