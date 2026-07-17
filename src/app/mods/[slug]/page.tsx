@@ -167,7 +167,7 @@ export default async function ModDetailPage({ params, searchParams }: PageProps)
 
       {mod.luaSnippet && (
         <section className="mt-10">
-          <h2 className="text-xl font-semibold">Lua snippet</h2>
+          <h2 className="text-xl font-semibold">Code snippet</h2>
           <pre className="mt-3 overflow-x-auto rounded-xl bg-zinc-900 p-4 text-sm text-zinc-100">
             <code>{mod.luaSnippet}</code>
           </pre>

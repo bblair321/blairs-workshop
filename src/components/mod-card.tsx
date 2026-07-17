@@ -12,7 +12,7 @@ type ModCardProps = {
 
 const PLACEHOLDER_LABELS: Record<Mod["category"], string> = {
   PC_GAME: "Mod",
-  LUA: "Lua",
+  LUA: "FiveM",
   TOOLS: "Tool",
 };
 

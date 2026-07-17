@@ -4,6 +4,10 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  if (pathname === "/lua") {
+    return NextResponse.redirect(new URL("/fivem", request.url), 308);
+  }
+
   if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
     const token = request.cookies.get("mod_admin_session")?.value;
     if (!token) {
@@ -17,5 +21,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/lua"],
 };

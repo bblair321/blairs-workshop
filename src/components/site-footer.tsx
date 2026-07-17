@@ -3,7 +3,7 @@ import { getContactEmail, SITE_NAME } from "@/lib/site";
 
 const FOOTER_LINKS = [
   { href: "/mods", label: "Mods" },
-  { href: "/lua", label: "Lua Scripts" },
+  { href: "/fivem", label: "FiveM Scripts" },
   { href: "/tools", label: "Tools" },
   { href: "/library", label: "Library" },
   { href: "/terms", label: "Terms" },
@@ -22,7 +22,7 @@ export function SiteFooter() {
               Blair&apos;s <span className="text-violet-600">Workshop</span>
             </p>
             <p className="mt-2 text-sm leading-relaxed text-zinc-500">
-              PC game mods, Lua scripts, and modding tools. Unofficial content —
+              PC game mods, FiveM scripts, and modding tools. Unofficial content —
               install at your own risk.
             </p>
           </div>

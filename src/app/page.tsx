@@ -13,9 +13,9 @@ const CATEGORIES = [
     icon: "🎮",
   },
   {
-    href: "/lua",
-    title: "Lua Scripts",
-    description: "Custom scripts with snippets and install paths.",
+    href: "/fivem",
+    title: "FiveM Scripts",
+    description: "Server resources with snippets and install steps.",
     icon: "📜",
   },
   {
@@ -47,15 +47,15 @@ export default async function HomePage() {
             Welcome to Blair&apos;s Workshop
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
-            PC game mods, Lua scripts, and modding tools I build and maintain.
+            PC game mods, FiveM scripts, and modding tools I build and maintain.
             Everything you need in one place.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/mods" className="btn-primary !px-6 !py-3">
               Browse all mods
             </Link>
-            <Link href="/lua" className="btn-secondary !px-6 !py-3">
-              Lua scripts
+            <Link href="/fivem" className="btn-secondary !px-6 !py-3">
+              FiveM scripts
             </Link>
             <Link href="/tools" className="btn-secondary !px-6 !py-3">
               Tools
@@ -102,7 +102,7 @@ export default async function HomePage() {
         {displayMods.length === 0 ? (
           <EmptyState
             title="Mods coming soon"
-            description="New PC game mods, Lua scripts, and tools will appear here as they're published."
+            description="New PC game mods, FiveM scripts, and tools will appear here as they're published."
             action={{ href: "/mods", label: "Browse catalog" }}
           />
         ) : (

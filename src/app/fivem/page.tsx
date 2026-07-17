@@ -6,24 +6,24 @@ import { getPublishedMods } from "@/lib/mods";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Lua Scripts",
-  description: "Custom Lua scripts for games and runtimes.",
+  title: "FiveM Scripts",
+  description: "FiveM resources and Lua scripts for your GTA V roleplay server.",
 };
 
-export default async function LuaPage() {
+export default async function FiveMPage() {
   const mods = await getPublishedMods({ category: "LUA" });
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
       <PageHeader
-        title="Lua Scripts"
-        description="Custom Lua scripts with install paths and copy-paste snippets where applicable."
+        title="FiveM Scripts"
+        description="FiveM resources and Lua scripts with install steps for your server."
       />
 
       {mods.length === 0 ? (
         <EmptyState
-          title="No Lua scripts yet"
-          description="Lua scripts will appear here once published."
+          title="No FiveM scripts yet"
+          description="FiveM scripts will appear here once published."
           action={{ href: "/mods", label: "Browse all mods" }}
         />
       ) : (

@@ -44,7 +44,7 @@ export default function TermsPage() {
 
       <h2>1. About this site</h2>
       <p>
-        {SITE_NAME} is a personal site where I publish PC game mods, Lua scripts,
+        {SITE_NAME} is a personal site where I publish PC game mods, FiveM scripts,
         and related modding tools. I operate this site as an individual, not as a
         game publisher or platform.
       </p>

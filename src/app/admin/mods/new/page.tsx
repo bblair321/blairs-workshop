@@ -84,7 +84,7 @@ export default function NewModPage() {
             className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
           >
             <option value="PC_GAME">PC Game Mod</option>
-            <option value="LUA">Lua Script</option>
+            <option value="LUA">FiveM Script</option>
             <option value="TOOLS">Tool</option>
           </select>
         </div>
@@ -100,7 +100,7 @@ export default function NewModPage() {
         </div>
         {category === "LUA" && (
           <div>
-            <label className="block text-sm font-medium">Lua snippet (optional)</label>
+            <label className="block text-sm font-medium">Code snippet (optional)</label>
             <textarea
               name="luaSnippet"
               rows={6}

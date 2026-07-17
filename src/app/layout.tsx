@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 const SITE_DESCRIPTION =
-  "PC game mods, Lua scripts, and modding tools by Blair. Free downloads, with premium mods coming later.";
-const DEFAULT_TITLE = `${SITE_NAME} — PC Game Mods & Lua Scripts`;
+  "PC game mods, FiveM scripts, and modding tools by Blair. Free downloads, with premium mods coming later.";
+const DEFAULT_TITLE = `${SITE_NAME} — PC Game Mods & FiveM Scripts`;
 
 const googleVerification = process.env.GOOGLE_SITE_VERIFICATION?.trim();
 

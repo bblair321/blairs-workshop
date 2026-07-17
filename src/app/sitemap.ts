@@ -10,7 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     "",
     "/mods",
-    "/lua",
+    "/fivem",
     "/tools",
     "/terms",
     "/privacy",

@@ -11,7 +11,7 @@ type SiteHeaderNavProps = {
 
 const NAV_LINKS = [
   { href: "/mods", label: "Browse Mods" },
-  { href: "/lua", label: "Lua Scripts" },
+  { href: "/fivem", label: "FiveM Scripts" },
   { href: "/tools", label: "Tools" },
   { href: "/library", label: "My Library" },
 ] as const;
