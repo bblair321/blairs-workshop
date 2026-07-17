@@ -15,6 +15,14 @@ export function formatPrice(cents: number): string {
   }).format(cents / 100);
 }
 
+export function formatCount(count: number): string {
+  if (count < 1000) return String(count);
+  if (count < 1_000_000) {
+    return `${(count / 1000).toFixed(count < 10_000 ? 1 : 0)}k`.replace(".0", "");
+  }
+  return `${(count / 1_000_000).toFixed(1)}M`.replace(".0", "");
+}
+
 export function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;

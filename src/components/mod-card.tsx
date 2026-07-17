@@ -1,10 +1,13 @@
 import Link from "next/link";
 import type { Mod, ModVersion } from "@/generated/prisma/client";
 import { CATEGORY_LABELS } from "@/lib/constants";
-import { formatPrice } from "@/lib/utils";
+import { formatCount, formatPrice } from "@/lib/utils";
 
 type ModCardProps = {
-  mod: Mod & { versions?: ModVersion[] };
+  mod: Mod & {
+    versions?: ModVersion[];
+    _count?: { downloads: number };
+  };
 };
 
 const PLACEHOLDER_LABELS: Record<Mod["category"], string> = {
@@ -64,6 +67,14 @@ export function ModCard({ mod }: ModCardProps) {
           </span>
           {mod.game && <span>{mod.game}</span>}
           {latestVersion && <span>v{latestVersion.version}</span>}
+          {mod._count && mod._count.downloads > 0 && (
+            <span className="inline-flex items-center gap-1">
+              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V3" />
+              </svg>
+              {formatCount(mod._count.downloads)}
+            </span>
+          )}
         </div>
       </div>
     </Link>

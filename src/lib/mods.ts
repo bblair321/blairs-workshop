@@ -15,6 +15,7 @@ export async function getPublishedMods(options?: {
     },
     include: {
       versions: { orderBy: { releasedAt: "desc" }, take: 1 },
+      _count: { select: { downloads: true } },
     },
     orderBy: { updatedAt: "desc" },
   });
@@ -25,6 +26,7 @@ export async function getModBySlug(slug: string) {
     where: { slug, isPublished: true },
     include: {
       versions: { orderBy: { releasedAt: "desc" } },
+      _count: { select: { downloads: true } },
     },
   });
 }

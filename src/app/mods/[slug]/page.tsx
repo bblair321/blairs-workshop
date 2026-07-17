@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DownloadButton } from "@/components/download-button";
@@ -5,7 +6,8 @@ import { auth } from "@/lib/auth";
 import { CATEGORY_LABELS } from "@/lib/constants";
 import { userOwnsMod } from "@/lib/mod-access";
 import { getModBySlug } from "@/lib/mods";
-import { formatFileSize, formatPrice } from "@/lib/utils";
+import { getSiteUrl, SITE_NAME } from "@/lib/site";
+import { formatCount, formatFileSize, formatPrice } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -14,13 +16,33 @@ type PageProps = {
   searchParams: Promise<{ purchased?: string }>;
 };
 
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const mod = await getModBySlug(slug);
   if (!mod) return { title: "Mod not found" };
+
+  const description = mod.shortDescription ?? mod.description.slice(0, 160);
+  const url = `${getSiteUrl()}/mods/${mod.slug}`;
+  const images = mod.coverImageUrl ? [{ url: mod.coverImageUrl }] : undefined;
+
   return {
     title: mod.title,
-    description: mod.shortDescription ?? mod.description.slice(0, 160),
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "website",
+      title: mod.title,
+      description,
+      url,
+      siteName: SITE_NAME,
+      images,
+    },
+    twitter: {
+      card: images ? "summary_large_image" : "summary",
+      title: mod.title,
+      description,
+      images: mod.coverImageUrl ? [mod.coverImageUrl] : undefined,
+    },
   };
 }
 
@@ -38,9 +60,33 @@ export default async function ModDetailPage({ params, searchParams }: PageProps)
       : false;
 
   const latestVersion = mod.versions[0];
+  const downloadCount = mod._count?.downloads ?? 0;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: mod.title,
+    description: mod.shortDescription ?? mod.description.slice(0, 300),
+    applicationCategory: "GameApplication",
+    operatingSystem: "Windows",
+    url: `${getSiteUrl()}/mods/${mod.slug}`,
+    ...(mod.coverImageUrl ? { image: mod.coverImageUrl } : {}),
+    ...(latestVersion ? { softwareVersion: latestVersion.version } : {}),
+    offers: {
+      "@type": "Offer",
+      price: (mod.priceCents / 100).toFixed(2),
+      priceCurrency: "USD",
+    },
+    author: { "@type": "Organization", name: SITE_NAME },
+  };
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <nav className="mb-6 flex flex-wrap items-center gap-1.5 text-sm text-zinc-500">
         <Link href="/mods" className="transition hover:text-violet-600">
           Mods
@@ -99,6 +145,9 @@ export default async function ModDetailPage({ params, searchParams }: PageProps)
           <h2 className="font-semibold">Download</h2>
           <p className="mt-1 text-sm text-zinc-500">
             Latest: v{latestVersion.version} · {formatFileSize(latestVersion.fileSize)}
+            {downloadCount > 0 && (
+              <> · {formatCount(downloadCount)} download{downloadCount === 1 ? "" : "s"}</>
+            )}
           </p>
           <div className="mt-4">
             <DownloadButton
